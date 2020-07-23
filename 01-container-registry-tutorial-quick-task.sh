@@ -1,13 +1,16 @@
 ACR_NAME=acrlsmdev001
 RES_GROUP=rsg-$ACR_NAME
 
+
+echo "az acr create..."
 az acr create --resource-group $RES_GROUP --name $ACR_NAME --sku Standard --location eastus
 
 AKV_NAME=$ACR_NAME-vault
 
+echo "az keyvault create..."
 az keyvault create --resource-group $RES_GROUP --name $AKV_NAME
 
-# Create service principal, store its password in AKV (the registry *password*)
+echo "Create service principal, store its password in AKV (the registry *password*)..."
 az keyvault secret set \
   --vault-name $AKV_NAME \
   --name $ACR_NAME-pull-pwd \
@@ -18,12 +21,13 @@ az keyvault secret set \
                 --query password \
                 --output tsv)
 
-# Store service principal ID in AKV (the registry *username*)
+echo "Store service principal ID in AKV (the registry *username*)"
 az keyvault secret set \
     --vault-name $AKV_NAME \
     --name $ACR_NAME-pull-usr \
     --value $(az ad sp show --id http://$ACR_NAME-pull --query appId --output tsv)
 
+echo "az container create"
 az container create \
     --resource-group $RES_GROUP \
     --name acr-tasks \
@@ -35,6 +39,7 @@ az container create \
     --query "{FQDN:ipAddress.fqdn}" \
     --output table
 
+echo "az container attach"
 az container attach --resource-group $RES_GROUP --name acr-tasks
 
 #az container delete --resource-group $RES_GROUP --name acr-tasks
