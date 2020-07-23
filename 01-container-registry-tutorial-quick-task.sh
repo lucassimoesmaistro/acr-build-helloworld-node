@@ -29,6 +29,9 @@ az keyvault secret set \
     --name $ACR_NAME-pull-usr \
     --value $(az ad sp show --id http://$ACR_NAME-pull --query appId --output tsv)
 
+echo "az acr build"
+az acr build --registry $ACR_NAME --image helloacrtasks:v1 .
+
 echo "az container create"
 az container create \
     --resource-group $RES_GROUP \
