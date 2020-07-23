@@ -1,5 +1,6 @@
 ACR_NAME=acrlsmdev001
 RES_GROUP=rsg-$ACR_NAME
+AKV_NAME=$ACR_NAME-vault
 
 echo "az group create..."
 az group create --resource-group $RES_GROUP --location eastus
@@ -7,11 +8,10 @@ az group create --resource-group $RES_GROUP --location eastus
 echo "az acr create..."
 az acr create --resource-group $RES_GROUP --name $ACR_NAME --sku Standard --location eastus
 
-AKV_NAME=$ACR_NAME-vault
-
 echo "az keyvault create..."
 az keyvault create --resource-group $RES_GROUP --name $AKV_NAME
 
+##Aqui
 echo "Create service principal, store its password in AKV (the registry *password*)..."
 az keyvault secret set \
   --vault-name $AKV_NAME \
