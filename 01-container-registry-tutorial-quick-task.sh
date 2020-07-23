@@ -1,6 +1,8 @@
 ACR_NAME=acrlsmdev001
 RES_GROUP=rsg-$ACR_NAME
 
+echo "az group create..."
+az group create --resource-group $RES_GROUP --location eastus
 
 echo "az acr create..."
 az acr create --resource-group $RES_GROUP --name $ACR_NAME --sku Standard --location eastus
